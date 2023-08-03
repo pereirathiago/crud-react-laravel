@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../axios-client";
 import { useStateContext } from "../contexts/ContextProvider";
@@ -9,7 +9,9 @@ export default function Signup() {
   const passwordRef = useRef()
   const passwordConfirmationRef = useRef()
 
-  const {setUser, setToken} = useStateContext()
+  const [errors, setErrors] = useState(null)
+
+  const { setUser, setToken } = useStateContext()
 
   const onSubmit = e => {
     e.preventDefault()
@@ -21,16 +23,16 @@ export default function Signup() {
     }
 
     axiosClient.post('/signup', payload)
-    .then(({data}) => {
-      setUser(data.user)
-      setToken(data.token)
-    })
-    .catch(err => {
-      const response = err.response
-      if(response && response.status === 422) {
-        rconsole.log(response.data.errors)
-      }
-    })
+      .then(({ data }) => {
+        setUser(data.user)
+        setToken(data.token)
+      })
+      .catch(err => {
+        const response = err.response
+        if (response && response.status === 422) {
+          setErrors(response.data.errors)
+        }
+      })
   }
 
   return (
@@ -38,13 +40,23 @@ export default function Signup() {
       <div className="form">
         <form onSubmit={onSubmit}>
           <h1 className="title">Cadastre-se de graça</h1>
-          <input ref={nameRef} type="text" placeholder="Nome completo"/>
-          <input ref={emailRef} type="email" placeholder="Email"/>
-          <input ref={passwordRef} type="password" placeholder="Senha"/>
-          <input ref={passwordConfirmationRef} type="password" placeholder="Confirmar senha "/>
+          {
+            errors &&
+            <div className="alert">
+              {
+                Object.keys(errors).map(key => {
+                  return <p key={key}>{errors[key][0]}</p>
+                })
+              }
+            </div>
+          }
+          <input ref={nameRef} type="text" placeholder="Nome completo" />
+          <input ref={emailRef} type="email" placeholder="Email" />
+          <input ref={passwordRef} type="password" placeholder="Senha" />
+          <input ref={passwordConfirmationRef} type="password" placeholder="Confirmar senha " />
           <button className="btn btn-block">Signup</button>
           <p className="message">
-            Já tem uma conta? 
+            Já tem uma conta?
             <br />
             <Link to="/login">Entrar</Link>
           </p>

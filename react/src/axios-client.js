@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const axiosClient = axios.create({
-  baseUrl: `${import.meta.env.VITE_APP_BASE_URL}/api`,
+  baseURL: `${import.meta.env.VITE_APP_BASE_URL}/api`,
 })
 
 axiosClient.interceptors.request.use((config) => {
@@ -10,13 +10,17 @@ axiosClient.interceptors.request.use((config) => {
   return config
 })
 
-axiosClient.interceptors.response.use((response)=> {
+axiosClient.interceptors.response.use((response) => {
   return response
 }, (error) => {
-  const {response} = error
-  if(response.status === 401) {
-    localStorage.removeItem('ACCESS_TOKEN')
-  } 
+  try {
+    const { response } = error
+    if (response.status === 401) {
+      localStorage.removeItem('ACCESS_TOKEN')
+    }
+  } catch (error) {
+    console.error(error)
+  }
 
   throw error
 })
