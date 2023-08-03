@@ -45,7 +45,7 @@ Com operações de CRUD, é possível criar, ler, atualizar e apagar registros d
 - Entre na pasta `laravel` pelo terminal
 - Execute `composer install`
 - Defina a chave de criptografia `php artisan key:generate --ansi`
-- Rode as migrations `php artisan migrate --seed
+- Rode as migrations `php artisan migrate --seed`
 - Iniciar o server `php artisan serve`
 - Abra uma nova aba no terminal e acesse a pasta `react`
 - Copie `.env.example` para `.env`
